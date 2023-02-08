@@ -1,5 +1,6 @@
 from rest_framework import generics
 from rest_framework.decorators import api_view, action
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import TemplateHTMLRenderer
@@ -42,6 +43,11 @@ class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()  # 1. 데이터의 범위를 지정해줘야합니다.
     serializer_class = PostSerializer  # 2. Serializer Class를 지정해줘야합니다.
     permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]  # 인증이 됨을 보장받을 수 있습니다.
+
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ["message"]
+    ordering_fields = ["id"]
+    ordering = ["-id"]
 
     def perform_create(self, serializer):
         # FIXME: 인증이 되어있다는 가정하에, author를 지정해보겠습니다.
