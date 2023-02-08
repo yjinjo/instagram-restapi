@@ -5,10 +5,10 @@ import requests
 
 load_dotenv()
 
-TOKEN = os.environ.get("TOKEN")
+TOKEN = os.environ.get("SIMPLE_JWT_TOKEN")
 
 headers = {
-    "Authorization": f"Token {TOKEN}",
+    "Authorization": f"Bearer {TOKEN}",
 }
 
 res = requests.get("http://localhost:8000/post/1/", headers=headers)
