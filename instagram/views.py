@@ -1,5 +1,5 @@
 from rest_framework import generics
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -25,14 +25,28 @@ from .models import Post
 
 
 # Function Based View
-@api_view(["GET"])
-def public_post_list(request):
-    qs = Post.objects.filter(is_public=True)
-    serializer = PostSerializer(qs, many=True)
-    return Response(serializer.data)
+# @api_view(["GET"])
+# def public_post_list(request):
+#     qs = Post.objects.filter(is_public=True)
+#     serializer = PostSerializer(qs, many=True)
+#     return Response(serializer.data)
 
 
 class PostViewSet(ModelViewSet):
     # 최소 2가지를 해줘야 합니다.
     queryset = Post.objects.all()  # 1. 데이터의 범위를 지정해줘야합니다.
     serializer_class = PostSerializer  # 2. Serializer Class를 지정해줘야합니다.
+
+    @action(detail=False, methods=["GET"])
+    def public(self, request):
+        qs = self.get_queryset().filter(is_public=True)
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=["PATCH"])
+    def set_public(self, request, pk):
+        instance = self.get_object()
+        instance.is_public = True
+        instance.save(update_fields=["is_public"])
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
