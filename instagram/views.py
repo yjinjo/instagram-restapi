@@ -46,8 +46,6 @@ class PostViewSet(ModelViewSet):
 
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["message"]
-    ordering_fields = ["id"]
-    ordering = ["-id"]
 
     def perform_create(self, serializer):
         # FIXME: 인증이 되어있다는 가정하에, author를 지정해보겠습니다.
