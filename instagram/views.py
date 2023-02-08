@@ -38,6 +38,13 @@ class PostViewSet(ModelViewSet):
     # 최소 2가지를 해줘야 합니다.
     queryset = Post.objects.all()  # 1. 데이터의 범위를 지정해줘야합니다.
     serializer_class = PostSerializer  # 2. Serializer Class를 지정해줘야합니다.
+    # authentication_classes = []
+
+    def perform_create(self, serializer):
+        # FIXME: 인증이 되어있다는 가정하에, author를 지정해보겠습니다.
+        author = self.request.user  # User model instance or AnonymousUser
+        ip = self.request.META["REMOTE_ADDR"]
+        serializer.save(author=author, ip=ip)
 
     @action(detail=False, methods=["GET"])
     def public(self, request):
